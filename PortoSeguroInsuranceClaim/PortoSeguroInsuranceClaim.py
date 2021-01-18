@@ -94,7 +94,7 @@ def split_data(data, seed, test_size, val_size):
 
     # split data into training, testing and evaluation sets
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size, random_state=seed, stratify=y)
-    X_train, X_val, y_train, y_val = train_test_split(X_test, y_test, test_size=val_size, random_state=seed, stratify=y_test)
+    X_test, X_val, y_test, y_val = train_test_split(X_test, y_test, test_size=val_size, random_state=seed, stratify=y_test)
     print("X_train shape: {X} \n y_train shape: {y}".format(X=X_train.shape, y=y_train.shape))
     print("X_test shape: {X} \n y_test shape: {y}".format(X=X_test.shape, y=y_test.shape))
     print("X_val shape: {X} \n y_val shape: {y}".format(X=X_val.shape, y=y_val.shape))
