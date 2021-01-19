@@ -6,8 +6,8 @@ import matplotlib.pyplot as plt
 from sklearn.linear_model import LogisticRegression
 from imblearn.under_sampling import RandomUnderSampler
 from imblearn.over_sampling import RandomOverSampler
+from imblearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
-from sklearn.pipeline import Pipeline
 from sklearn.compose import ColumnTransformer
 from sklearn.model_selection import train_test_split, StratifiedKFold, cross_val_predict
 from sklearn.metrics import roc_auc_score
@@ -117,11 +117,9 @@ def train_test_and_evaluate(seed, X_train, X_test, y_train, y_test, onehots, num
         ('scaler', scaler),
         ('pca', pca)])
 
-    # oversample minority class first and undersample majority class afterwards
+    # define resampling: oversample minority class first and undersample majority class afterwards
     over = RandomOverSampler(random_state = random_seed, sampling_strategy=0.1)
     under = RandomUnderSampler(random_state = random_seed, sampling_strategy=0.5)
-    X_train, y_train = over.fit_resample(X_train, y_train)
-    X_train, y_train = under.fit_resample(X_train, y_train)
     
     # combine steps into preprocessing and machine learning pipeline using logistic regression
     preprocessor = ColumnTransformer(transformers=[
@@ -129,6 +127,8 @@ def train_test_and_evaluate(seed, X_train, X_test, y_train, y_test, onehots, num
         ('onehot', onehot_transformer, onehots)])
 
     pipe_model = Pipeline(steps=[
+        ('over', over),
+        ('under', under),
         ('prep', preprocessor),
         ('classifier', LogisticRegression(max_iter=1000))])
 
